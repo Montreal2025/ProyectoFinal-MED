@@ -199,4 +199,26 @@ public class SistemaClinica {
             }
         }
     }
+
+    public String generarSiguienteExpediente() {
+        int maxNumero = 0;
+
+        // Recorremos la lista de pacientes para encontrar el número de expediente más alto actual
+        for (Paciente p : pacientes) {
+            String exp = p.getExpediente(); // Ej: "EXP001"
+            if (exp != null && exp.startsWith("EXP")) {
+                try {
+                    int num = Integer.parseInt(exp.substring(3)); // Extrae la parte numérica (ej: "001" -> 1)
+                    if (num > maxNumero) {
+                        maxNumero = num;
+                    }
+                } catch (NumberFormatException e) {
+                    // Ignora si hay algún formato distinto
+                }
+            }
+        }
+
+        // Retorna el siguiente con formato de 3 dígitos con ceros a la izquierda (Ej: EXP006)
+        return String.format("EXP%03d", maxNumero + 1);
+    }
 }

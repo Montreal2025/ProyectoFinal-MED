@@ -19,19 +19,21 @@ public class ProyectoFinalMED {
         boolean continuar = true;
 
         while (continuar) {
-            System.out.println("\nSISTEMA DE TURNOS DE CLINICA");
+            System.out.println("\n==========================================");
+            System.out.println("      SISTEMA DE TURNOS - CLINICA MED     ");
+            System.out.println("==========================================");
             System.out.println("1. Registrar paciente");
             System.out.println("2. Mostrar pacientes");
             System.out.println("3. Buscar paciente por expediente");
-            System.out.println("4. Buscar medico por codigo");
-            System.out.println("5. Asignar turno");
-            System.out.println("6. Atender siguiente turno");
-            System.out.println("7. Deshacer ultimo turno asignado");
-            System.out.println("8. Mostrar historial clinico");
-            System.out.println("9. Reporte de pacientes por apellido");
-            System.out.println("10. Reporte por ultima consulta");
-            System.out.println("11. Mostrar total y altura del arbol");
-            System.out.println("12. Mostrar turnos pendientes");
+            System.out.println("4. Reporte de pacientes por apellido");
+            System.out.println("5. Buscar medico por codigo");
+            System.out.println("6. Asignar turno");
+            System.out.println("7. Atender siguiente turno");
+            System.out.println("8. Deshacer ultimo turno asignado");
+            System.out.println("9. Mostrar turnos pendientes");
+            System.out.println("10. Mostrar historial clinico");
+            System.out.println("11. Reporte por ultima consulta");
+            System.out.println("12. Mostrar total y altura del arbol");
             System.out.println("0. Salir");
 
             try {
@@ -44,27 +46,27 @@ public class ProyectoFinalMED {
                     case 3 ->
                         buscarPaciente();
                     case 4 ->
-                        buscarMedico();
-                    case 5 ->
-                        asignarTurno();
-                    case 6 ->
-                        atenderTurno();
-                    case 7 ->
-                        deshacerTurno();
-                    case 8 ->
-                        mostrarHistorial();
-                    case 9 ->
                         SISTEMA.listarPacientesPorApellido()
                                 .forEach(System.out::println);
+                    case 5 ->
+                        buscarMedico();
+                    case 6 ->
+                        asignarTurno();
+                    case 7 ->
+                        atenderTurno();
+                    case 8 ->
+                        deshacerTurno();
+                    case 9 ->
+                        SISTEMA.mostrarTurnosPendientes();
                     case 10 ->
+                        mostrarHistorial();
+                    case 11 ->
                         SISTEMA.listarPacientesPorUltimaConsulta()
                                 .forEach(System.out::println);
-                    case 11 ->
+                    case 12 ->
                         System.out.println("Pacientes en el arbol: "
                                 + SISTEMA.contarPacientes() + " | Altura: "
                                 + SISTEMA.alturaArbol());
-                    case 12 ->
-                        SISTEMA.mostrarTurnosPendientes();
                     case 0 ->
                         continuar = false;
                     default ->
@@ -77,7 +79,10 @@ public class ProyectoFinalMED {
     }
 
     private static void registrarPaciente() {
-        String expediente = leerTexto("Numero de expediente: 'EXP000'");
+        // Generar automáticamente el expediente basado en los registros previos
+        String expediente = SISTEMA.generarSiguienteExpediente();
+        System.out.println("Numero de expediente asignado automaticamente: " + expediente);
+
         String nombres = leerTexto("Nombres: ");
         String apellidos = leerTexto("Apellidos: ");
         LocalDate nacimiento = leerFecha("Fecha de nacimiento (AAAA-MM-DD): ");
@@ -85,8 +90,7 @@ public class ProyectoFinalMED {
         Paciente nuevoPaciente = new Paciente(expediente, nombres, apellidos, nacimiento);
         SISTEMA.registrarPaciente(nuevoPaciente);
 
-        //Mensaje de confirmación para registro
-        System.out.println("¡Paciente registrado exitosamente con expediente " + expediente + "!");
+        System.out.println("¡Paciente registrado exitosamente!");
     }
 
     //agregue este metodo por si llegara a estar vacia la lista de pacientes registrados
@@ -140,7 +144,6 @@ public class ProyectoFinalMED {
         System.out.println("¡Turno asignado exitosamente!\nDetalle: " + turno);
     }
 
-    
     //Metodo Actualizado para evitar que el usuario digite el nombre de la especialidad
     private static void atenderTurno() {
         // Obtener la lista de especialidades registradas en el sistema
