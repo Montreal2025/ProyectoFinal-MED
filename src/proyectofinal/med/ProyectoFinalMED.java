@@ -1,7 +1,8 @@
 package proyectofinal.med;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Scanner;
 
@@ -85,7 +86,7 @@ public class ProyectoFinalMED {
 
         String nombres = leerTexto("Nombres: ");
         String apellidos = leerTexto("Apellidos: ");
-        LocalDate nacimiento = leerFecha("Fecha de nacimiento (AAAA-MM-DD): ");
+        LocalDate nacimiento = leerFechaNacimiento();
 
         Paciente nuevoPaciente = new Paciente(expediente, nombres, apellidos, nacimiento);
         SISTEMA.registrarPaciente(nuevoPaciente);
@@ -205,11 +206,52 @@ public class ProyectoFinalMED {
         }
     }
 
-    private static LocalDate leerFecha(String mensaje) {
-        try {
-            return LocalDate.parse(leerTexto(mensaje));
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("La fecha debe tener el formato AAAA-MM-DD.");
+    private static LocalDate leerFechaNacimiento() {
+        LocalDate hoy = LocalDate.now();
+
+        while (true) {
+            int mes = leerEnteroEnRango("Mes de nacimiento (1-12): ", 1, 12,
+                    "El mes debe estar entre 1 y 12.");
+            int maximoDia = Month.of(mes).maxLength();
+            int dia = leerEnteroEnRango("Dia de nacimiento: ", 1, maximoDia,
+                    "El dia debe estar entre 1 y " + maximoDia + " para ese mes.");
+            int anio = leerEnteroEnRango("Anio de nacimiento: ", 1, hoy.getYear(),
+                    "El a?o no puede ser futuro ni menor que 1.");
+
+            int diasDelMes = YearMonth.of(anio, mes).lengthOfMonth();
+            if (dia > diasDelMes) {
+                System.out.println("Error: el dia " + dia + " no existe en el mes " + mes
+                        + " del a?o " + anio + ". Febrero tiene 29 dias solo en a?os bisiestos.");
+                continue;
+            }
+
+            LocalDate fecha = LocalDate.of(anio, mes, dia);
+            if (fecha.isAfter(hoy)) {
+                System.out.println("Error: la fecha de nacimiento no puede ser futura. Hoy es "
+                        + hoy + ".");
+                continue;
+            }
+            return fecha;
+        }
+    }
+
+    private static int leerEnteroEnRango(String mensaje, int minimo, int maximo,
+            String mensajeRango) {
+        while (true) {
+            System.out.print(mensaje);
+            String valor = ENTRADA.nextLine().trim();
+            int numero;
+            try {
+                numero = Integer.parseInt(valor);
+            } catch (NumberFormatException e) {
+                System.out.println("Error: ingrese un numero entero.");
+                continue;
+            }
+            if (numero < minimo || numero > maximo) {
+                System.out.println("Error: " + mensajeRango);
+                continue;
+            }
+            return numero;
         }
     }
 }
