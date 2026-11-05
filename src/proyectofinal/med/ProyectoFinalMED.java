@@ -216,12 +216,12 @@ public class ProyectoFinalMED {
             int dia = leerEnteroEnRango("Dia de nacimiento: ", 1, maximoDia,
                     "El dia debe estar entre 1 y " + maximoDia + " para ese mes.");
             int anio = leerEnteroEnRango("Anio de nacimiento: ", 1, hoy.getYear(),
-                    "El a?o no puede ser futuro ni menor que 1.");
+                    "El anio no puede ser futuro ni menor que 1.");
 
             int diasDelMes = YearMonth.of(anio, mes).lengthOfMonth();
             if (dia > diasDelMes) {
                 System.out.println("Error: el dia " + dia + " no existe en el mes " + mes
-                        + " del a?o " + anio + ". Febrero tiene 29 dias solo en a?os bisiestos.");
+                        + " del anio " + anio + ". Febrero tiene 29 dias solo en anios bisiestos.");
                 continue;
             }
 
