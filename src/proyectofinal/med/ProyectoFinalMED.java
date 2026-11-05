@@ -92,6 +92,7 @@ public class ProyectoFinalMED {
         SISTEMA.registrarPaciente(nuevoPaciente);
 
         System.out.println("¡Paciente registrado exitosamente!");
+        System.out.println("Fecha de nacimiento registrada: " + nacimiento);
     }
 
     //agregue este metodo por si llegara a estar vacia la lista de pacientes registrados
@@ -215,13 +216,13 @@ public class ProyectoFinalMED {
             int maximoDia = Month.of(mes).maxLength();
             int dia = leerEnteroEnRango("Dia de nacimiento: ", 1, maximoDia,
                     "El dia debe estar entre 1 y " + maximoDia + " para ese mes.");
-            int anio = leerEnteroEnRango("Anio de nacimiento: ", 1, hoy.getYear(),
-                    "El anio no puede ser futuro ni menor que 1.");
+            int anio = leerEnteroEnRango("Año de nacimiento: ", 1, hoy.getYear(),
+                    "El año no puede ser futuro ni menor que 1.");
 
             int diasDelMes = YearMonth.of(anio, mes).lengthOfMonth();
             if (dia > diasDelMes) {
                 System.out.println("Error: el dia " + dia + " no existe en el mes " + mes
-                        + " del anio " + anio + ". Febrero tiene 29 dias solo en anios bisiestos.");
+                        + " del año " + anio + ". Febrero tiene 29 dias solo en años bisiestos.");
                 continue;
             }
 
