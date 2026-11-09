@@ -23,7 +23,10 @@ public class SistemaClinica {
         Medico medico3 = new Medico("MED003", "Ana", "Castillo", "Cardiologia");
         Medico medico4 = new Medico("MED004", "Jorge", "Ramirez", "Dermatologia");
         Medico medico5 = new Medico("MED005", "Sofia", "Herrera", "Ginecologia");
-        medicos.addAll(List.of(medico1, medico2, medico3, medico4, medico5));
+        Medico medico6 = new Medico("MED006", "Roberto", "Guevara", "Oftalmologia");
+        Medico medico7 = new Medico("MED007", "Claudia", "Rivas", "Traumatologia");
+
+        medicos.addAll(List.of(medico1, medico2, medico3, medico4, medico5, medico6, medico7));
         medicos.sort(Comparator.comparing(Medico::getCodigo, String.CASE_INSENSITIVE_ORDER));
 
         especialidades.addAll(List.of(
@@ -31,7 +34,9 @@ public class SistemaClinica {
                 new Especialidad("Pediatria", medico2),
                 new Especialidad("Cardiologia", medico3),
                 new Especialidad("Dermatologia", medico4),
-                new Especialidad("Ginecologia", medico5)
+                new Especialidad("Ginecologia", medico5),
+                new Especialidad("Oftalmologia", medico6),
+                new Especialidad("Traumatologia", medico7)
         ));
 
         registrarPacienteConHistorial(new Paciente(
@@ -49,6 +54,16 @@ public class SistemaClinica {
         registrarPacienteConHistorial(new Paciente(
                 "EXP005", "Lucia", "Morales", LocalDate.of(1998, 9, 18)),
                 "Ginecologia", medico5, "Consulta preventiva", LocalDate.of(2026, 5, 6));
+
+        registrarPacienteConHistorial(new Paciente(
+                "EXP006", "Claudia", "Fuentes", LocalDate.of(1995, 4, 14)),
+                "Oftalmologia", medico6, "Examen de la vista", LocalDate.of(2026, 6, 10));
+        registrarPacienteConHistorial(new Paciente(
+                "EXP007", "Mario", "Alfaro", LocalDate.of(2001, 12, 3)),
+                "Traumatologia", medico7, "Dolor de rodilla por deporte", LocalDate.of(2026, 6, 15));
+        registrarPacienteConHistorial(new Paciente(
+                "EXP008", "Gabriela", "Solares", LocalDate.of(1988, 8, 22)),
+                "Cardiologia", medico3, "Chequeo preventivo", LocalDate.of(2026, 7, 1));
     }
 
     private void registrarPacienteConHistorial(
@@ -79,14 +94,14 @@ public class SistemaClinica {
         List<Paciente> resultados = new ArrayList<>();
         String filtroLower = filtro.trim().toLowerCase();
         for (Paciente p : pacientes) {
-            if (p.getNombres().toLowerCase().contains(filtroLower) || 
-                p.getApellidos().toLowerCase().contains(filtroLower)) {
+            if (p.getNombres().toLowerCase().contains(filtroLower)
+                    || p.getApellidos().toLowerCase().contains(filtroLower)) {
                 resultados.add(p);
             }
         }
         return resultados;
     }
-    
+
     public Medico buscarMedico(String codigo) {
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException("El codigo del medico es obligatorio.");
@@ -107,7 +122,7 @@ public class SistemaClinica {
         }
         throw new IllegalArgumentException("No existe un medico con ese codigo.");
     }
-    
+
     public List<Medico> buscarMedicosPorNombre(String filtro) {
         if (filtro == null || filtro.isBlank()) {
             throw new IllegalArgumentException("El filtro de búsqueda es obligatorio.");
@@ -115,8 +130,8 @@ public class SistemaClinica {
         List<Medico> resultados = new ArrayList<>();
         String filtroLower = filtro.trim().toLowerCase();
         for (Medico m : medicos) {
-            if (m.getNombre().toLowerCase().contains(filtroLower) || 
-                m.getApellido().toLowerCase().contains(filtroLower)) {
+            if (m.getNombres().toLowerCase().contains(filtroLower)
+                    || m.getApellidos().toLowerCase().contains(filtroLower)) {
                 resultados.add(m);
             }
         }
@@ -210,17 +225,13 @@ public class SistemaClinica {
         return arbolPacientes.altura();
     }
 
-    //Metodo para ver los turnos pendientes por cada especialidad
     public void mostrarTurnosPendientes() {
-        boolean hayTurnos = false;
         System.out.println("\n--- TURNOS PENDIENTES POR ESPECIALIDAD ---");
         for (Especialidad especialidad : especialidades) {
             System.out.println("\nEspecialidad: " + especialidad.getNombre() + " (Medico: " + (especialidad.getMedico() == null ? "Ninguno" : especialidad.getMedico().getNombreCompleto()) + ")");
             if (especialidad.getTurnos().estaVacia()) {
                 System.out.println("  [No hay turnos pendientes]");
             } else {
-                hayTurnos = true;
-                // Recorremos la cola sin perder los elementos (creando una copia)
                 int contador = 1;
                 for (Turno turno : especialidad.getTurnos().obtenerTurnos()) {
                     System.out.println("  " + contador + ". " + turno);
@@ -232,13 +243,11 @@ public class SistemaClinica {
 
     public String generarSiguienteExpediente() {
         int maxNumero = 0;
-
-        // Recorremos la lista de pacientes para encontrar el número de expediente más alto actual
         for (Paciente p : pacientes) {
-            String exp = p.getExpediente(); // Ej: "EXP001"
+            String exp = p.getExpediente();
             if (exp != null && exp.startsWith("EXP")) {
                 try {
-                    int num = Integer.parseInt(exp.substring(3)); // Extrae la parte numérica (ej: "001" -> 1)
+                    int num = Integer.parseInt(exp.substring(3));
                     if (num > maxNumero) {
                         maxNumero = num;
                     }
@@ -247,8 +256,6 @@ public class SistemaClinica {
                 }
             }
         }
-
-        // Retorna el siguiente con formato de 3 dígitos con ceros a la izquierda (Ej: EXP006)
         return String.format("EXP%03d", maxNumero + 1);
     }
 }

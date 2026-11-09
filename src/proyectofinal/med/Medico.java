@@ -25,6 +25,14 @@ public class Medico {
         return codigo;
     }
 
+    public String getNombres() {
+        return nombres;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
     public String getNombreCompleto() {
         return nombres + " " + apellidos;
     }

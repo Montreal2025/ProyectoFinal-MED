@@ -23,48 +23,67 @@ public class ProyectoFinalMED {
             System.out.println("\n==========================================");
             System.out.println("      SISTEMA DE TURNOS - CLINICA MED     ");
             System.out.println("==========================================");
+            System.out.println("--- GESTION DE PACIENTES ---");
             System.out.println("1. Registrar paciente");
             System.out.println("2. Mostrar pacientes");
             System.out.println("3. Buscar paciente por expediente");
-            System.out.println("4. Reporte de pacientes por apellido");
-            System.out.println("5. Buscar medico por codigo");
-            System.out.println("6. Asignar turno");
-            System.out.println("7. Atender siguiente turno");
-            System.out.println("8. Deshacer ultimo turno asignado");
-            System.out.println("9. Mostrar turnos pendientes");
-            System.out.println("10. Mostrar historial clinico");
-            System.out.println("11. Reporte por ultima consulta");
-            System.out.println("12. Mostrar total y altura del arbol");
+            System.out.println("4. Buscar paciente por nombre o apellido"); // NUEVA
+            System.out.println("5. Reporte de pacientes por apellido");
+
+            System.out.println("\n--- GESTION DE MEDICOS ---");
+            System.out.println("6. Mostrar lista de medicos");             // NUEVA
+            System.out.println("7. Buscar medico por codigo");
+            System.out.println("8. Buscar medico por nombre o apellido"); // NUEVA
+
+            System.out.println("\n--- TURNOS Y ATENCION ---");
+            System.out.println("9. Asignar turno");
+            System.out.println("10. Atender siguiente turno");
+            System.out.println("11. Deshacer ultimo turno asignado");
+            System.out.println("12. Mostrar turnos pendientes");
+
+            System.out.println("\n--- HISTORIALES Y REPORTES ---");
+            System.out.println("13. Mostrar historial clinico");
+            System.out.println("14. Reporte por ultima consulta");
+
+            System.out.println("\n--- SISTEMA Y ESTRUCTURAS ---");
+            System.out.println("15. Mostrar total y altura del arbol");
             System.out.println("0. Salir");
+            System.out.println("==========================================");
 
             try {
                 int opcion = leerEntero("Opcion: ");
                 switch (opcion) {
                     case 1 ->
-                        registrarPaciente(); //Cambie esto
+                        registrarPaciente();
                     case 2 ->
                         mostrarPacientes();
                     case 3 ->
                         buscarPaciente();
                     case 4 ->
+                        buscarPacientePorNombre(); // NUEVA
+                    case 5 ->
                         SISTEMA.listarPacientesPorApellido()
                                 .forEach(System.out::println);
-                    case 5 ->
-                        buscarMedico();
                     case 6 ->
-                        asignarTurno();
+                        mostrarListaMedicos();     // NUEVA
                     case 7 ->
-                        atenderTurno();
+                        buscarMedico();
                     case 8 ->
-                        deshacerTurno();
+                        buscarMedicoPorNombre();   // NUEVA
                     case 9 ->
-                        SISTEMA.mostrarTurnosPendientes();
+                        asignarTurno();
                     case 10 ->
-                        mostrarHistorial();
+                        atenderTurno();
                     case 11 ->
+                        deshacerTurno();
+                    case 12 ->
+                        SISTEMA.mostrarTurnosPendientes();
+                    case 13 ->
+                        mostrarHistorial();
+                    case 14 ->
                         SISTEMA.listarPacientesPorUltimaConsulta()
                                 .forEach(System.out::println);
-                    case 12 ->
+                    case 15 ->
                         System.out.println("Pacientes en el arbol: "
                                 + SISTEMA.contarPacientes() + " | Altura: "
                                 + SISTEMA.alturaArbol());
@@ -80,7 +99,6 @@ public class ProyectoFinalMED {
     }
 
     private static void registrarPaciente() {
-        // Generar automáticamente el expediente basado en los registros previos
         String expediente = SISTEMA.generarSiguienteExpediente();
         System.out.println("Numero de expediente asignado automaticamente: " + expediente);
 
@@ -95,7 +113,6 @@ public class ProyectoFinalMED {
         System.out.println("Fecha de nacimiento registrada: " + nacimiento);
     }
 
-    //agregue este metodo por si llegara a estar vacia la lista de pacientes registrados
     private static void mostrarPacientes() {
         List<Paciente> lista = SISTEMA.getPacientes();
         if (lista.isEmpty()) {
@@ -111,66 +128,84 @@ public class ProyectoFinalMED {
         System.out.println(SISTEMA.buscarPaciente(expediente));
     }
 
+    private static void buscarPacientePorNombre() {
+        String filtro = leerTexto("Ingrese el nombre o apellido del paciente a buscar: ");
+        List<Paciente> resultados = SISTEMA.buscarPacientesPorNombre(filtro);
+        if (resultados.isEmpty()) {
+            System.out.println("No se encontraron pacientes que coincidan con: " + filtro);
+        } else {
+            System.out.println("\n--- RESULTADOS DE BUSQUEDA DE PACIENTES ---");
+            resultados.forEach(System.out::println);
+        }
+    }
+
+    private static void mostrarListaMedicos() {
+        List<Medico> medicos = SISTEMA.getMedicos();
+        if (medicos.isEmpty()) {
+            System.out.println("No hay medicos registrados en el sistema.");
+            return;
+        }
+        System.out.println("\n--- LISTA GENERAL DE MEDICOS ---");
+        medicos.forEach(System.out::println);
+    }
+
     private static void buscarMedico() {
         String codigo = leerTexto("Codigo del medico: ");
         System.out.println(SISTEMA.buscarMedico(codigo));
     }
 
-    //Actualización para poder elegir una especilidad
+    private static void buscarMedicoPorNombre() {
+        String filtro = leerTexto("Ingrese el nombre o apellido del medico a buscar: ");
+        List<Medico> resultados = SISTEMA.buscarMedicosPorNombre(filtro);
+        if (resultados.isEmpty()) {
+            System.out.println("No se encontraron medicos que coincidan con: " + filtro);
+        } else {
+            System.out.println("\n--- RESULTADOS DE BUSQUEDA DE MEDICOS ---");
+            resultados.forEach(System.out::println);
+        }
+    }
+
     private static void asignarTurno() {
         String expediente = leerTexto("Numero de expediente: ");
-        // Obtener la lista de especialidades registradas en el sistema
         List<Especialidad> especialidades = SISTEMA.getEspecialidades();
         if (especialidades.isEmpty()) {
             System.out.println("No hay especialidades disponibles en este momento.");
             return;
         }
 
-        // Mostrar el menú interactivo de especialidades con su respectivo médico
         System.out.println("\n--- SELECCIONE UNA ESPECIALIDAD ---");
         for (int i = 0; i < especialidades.size(); i++) {
             System.out.println((i + 1) + ". " + especialidades.get(i));
         }
 
-        // Leer la opción seleccionada por el usuario de forma numérica
         int seleccion = leerEntero("Ingrese el numero de la especialidad: ");
         if (seleccion < 1 || seleccion > especialidades.size()) {
             throw new IllegalArgumentException("Seleccion de especialidad fuera de rango.");
         }
 
-        // Obtener el nombre de la especialidad elegida
         String nombreEspecialidad = especialidades.get(seleccion - 1).getNombre();
-
-        // Asignar el turno usando la lógica del sistema
         Turno turno = SISTEMA.asignarTurno(expediente, nombreEspecialidad);
         System.out.println("¡Turno asignado exitosamente!\nDetalle: " + turno);
     }
 
-    //Metodo Actualizado para evitar que el usuario digite el nombre de la especialidad
     private static void atenderTurno() {
-        // Obtener la lista de especialidades registradas en el sistema
         List<Especialidad> especialidades = SISTEMA.getEspecialidades();
         if (especialidades.isEmpty()) {
             System.out.println("No hay especialidades disponibles en este momento.");
             return;
         }
 
-        // Mostrar el menú interactivo de especialidades
         System.out.println("\n--- SELECCIONE LA ESPECIALIDAD A ATENDER ---");
         for (int i = 0; i < especialidades.size(); i++) {
             System.out.println((i + 1) + ". " + especialidades.get(i));
         }
 
-        // Leer la opción seleccionada por el usuario de forma numérica
         int seleccion = leerEntero("Ingrese el numero de la especialidad: ");
         if (seleccion < 1 || seleccion > especialidades.size()) {
             throw new IllegalArgumentException("Seleccion de especialidad fuera de rango.");
         }
 
-        // Obtener el nombre de la especialidad elegida
         String nombreEspecialidad = especialidades.get(seleccion - 1).getNombre();
-
-        // Atender el siguiente turno usando la lógica del sistema
         Turno turno = SISTEMA.atenderSiguienteTurno(nombreEspecialidad);
         System.out.println("¡Turno atendido con exito!\nDetalle del turno atendido: " + turno);
     }
