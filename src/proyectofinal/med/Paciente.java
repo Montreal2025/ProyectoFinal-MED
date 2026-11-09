@@ -18,6 +18,9 @@ public class Paciente {
         if (fechaNacimiento == null) {
             throw new IllegalArgumentException("La fecha de nacimiento es obligatoria.");
         }
+        if (fechaNacimiento.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha de nacimiento no puede ser futura.");
+        }
         this.fechaNacimiento = fechaNacimiento;
         this.historial = new ListaEnlazadaConsultas();
     }
