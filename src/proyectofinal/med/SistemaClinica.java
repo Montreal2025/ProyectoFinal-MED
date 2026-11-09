@@ -72,6 +72,21 @@ public class SistemaClinica {
         return arbolPacientes.buscar(expediente.trim());
     }
 
+    public List<Paciente> buscarPacientesPorNombre(String filtro) {
+        if (filtro == null || filtro.isBlank()) {
+            throw new IllegalArgumentException("El filtro de búsqueda es obligatorio.");
+        }
+        List<Paciente> resultados = new ArrayList<>();
+        String filtroLower = filtro.trim().toLowerCase();
+        for (Paciente p : pacientes) {
+            if (p.getNombres().toLowerCase().contains(filtroLower) || 
+                p.getApellidos().toLowerCase().contains(filtroLower)) {
+                resultados.add(p);
+            }
+        }
+        return resultados;
+    }
+    
     public Medico buscarMedico(String codigo) {
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException("El codigo del medico es obligatorio.");
@@ -91,6 +106,21 @@ public class SistemaClinica {
             }
         }
         throw new IllegalArgumentException("No existe un medico con ese codigo.");
+    }
+    
+    public List<Medico> buscarMedicosPorNombre(String filtro) {
+        if (filtro == null || filtro.isBlank()) {
+            throw new IllegalArgumentException("El filtro de búsqueda es obligatorio.");
+        }
+        List<Medico> resultados = new ArrayList<>();
+        String filtroLower = filtro.trim().toLowerCase();
+        for (Medico m : medicos) {
+            if (m.getNombre().toLowerCase().contains(filtroLower) || 
+                m.getApellido().toLowerCase().contains(filtroLower)) {
+                resultados.add(m);
+            }
+        }
+        return resultados;
     }
 
     public Turno asignarTurno(String expediente, String nombreEspecialidad) {
